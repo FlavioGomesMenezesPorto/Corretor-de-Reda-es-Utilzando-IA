@@ -1,0 +1,5 @@
+matplotlib>=3.7.0
+seaborn>=0.12.0
+nltk>=3.8.1
+spacy>=3.5.0
+jupyter>=1.0.0
