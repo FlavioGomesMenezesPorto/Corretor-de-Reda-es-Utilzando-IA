@@ -18,7 +18,32 @@ Este projeto oferece um baseline funcional para avaliar redações a partir de n
 
 ```text
 .
-├── data/
+├── data/# IntelliWrite AI 
+
+Fala! Boas-vindas ao repositório do **IntelliWrite AI**. 
+
+Eu construí esse projeto em 2025 para o meu TCC, com uma ideia bem clara na cabeça: como a gente pode usar Inteligência Artificial para facilitar a correção de redações, sem perder a qualidade e o critério? 
+
+A resposta que cheguei foi esse sistema. Ele junta Python e Machine Learning para ler, analisar e dar notas aos textos baseados em rubricas (regras) bem definidas. É uma tentativa de organizar os pensamentos e critérios de quem corrige, automatizando o trabalho braçal.
+
+## 🧭 Como eu organizei a casa
+
+Eu tentei deixar a estrutura o mais limpa possível, separando bem o que cada parte faz para o código não virar uma bagunça:
+
+* **O Motor Principal (`src/`):** É aqui que a mágica acontece. Tem a parte que limpa e prepara os textos (`data.py` e `data_processing.py`), a inteligência em si (`model.py` e `evaluation.py`), e os critérios de nota que o modelo precisa respeitar (`rubrics.py`).
+* **A Porta de Entrada (`app.py` e `src/api.py`):** É por onde o sistema recebe as redações. Configurei como uma API para ficar fácil de integrar depois.
+* **Área de Testes e Brincadeiras (`notebooks/`):** Se você quiser só ver a coisa funcionando na prática sem configurar muita coisa, abra o `demo.ipynb`. É o melhor lugar para entender os bastidores.
+* **Garantia de Qualidade (`tests/`):** Deixei alguns testes prontos para garantir que, se eu (ou você) mexer no código amanhã, a gente não quebre a lógica de correção.
+
+## 🛠️ Quer rodar na sua máquina?
+
+É bem tranquilo. Não tem muito segredo:
+
+1. Clona o repositório pra sua máquina.
+2. Cria o seu ambiente virtual favorito (`venv`, por exemplo) pra não bagunçar o seu Python.
+3. Instala as bibliotecas que o projeto precisa:
+```bash
+   pip install -r requirements.txt
 │   └── redacoes.csv
 ├── notebooks/
 │   └── demo.ipynb
