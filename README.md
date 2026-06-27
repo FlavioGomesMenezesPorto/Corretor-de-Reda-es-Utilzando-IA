@@ -1,49 +1,23 @@
 # IntelliWrite AI
 
-Plataforma de análise e treinamento de redações usando Python, NLP e Machine Learning.
+Plataforma de análise e treinamento de redações no padrão ITA usando Python, NLP e Machine Learning.
 
 ## Objetivo
 
-Este projeto oferece um baseline funcional para avaliar redações a partir de notas históricas. A versão atual usa:
+Este projeto oferece um baseline funcional para avaliar redações no padrão ITA a partir de notas históricas. A versão atual usa:
 
 - limpeza e normalização de texto;
 - vetorização TF-IDF com uni/bigramas;
 - regressão com Random Forest;
 - CLI para treino, avaliação e previsão;
-- três perfis de correção: Alto Padrão, Médio Padrão e Baixo Padrão;
-- rubrica com Tema, Tipo de texto, Coerência, Coesão e Modalidade escrita;
+- rubrica ITA com Tema, Tipo de texto, Coerência, Coesão e Modalidade escrita;
 - schema SQLite para persistir redações, avaliações e execuções de modelo.
 
 ## Estrutura
 
 ```text
 .
-├── data/# IntelliWrite AI 
-
-Fala! Boas-vindas ao repositório do **IntelliWrite AI**. 
-
-Eu construí esse projeto em 2025 para o meu TCC, com uma ideia bem clara na cabeça: como a gente pode usar Inteligência Artificial para facilitar a correção de redações, sem perder a qualidade e o critério? 
-
-A resposta que cheguei foi esse sistema. Ele junta Python e Machine Learning para ler, analisar e dar notas aos textos baseados em rubricas (regras) bem definidas. É uma tentativa de organizar os pensamentos e critérios de quem corrige, automatizando o trabalho braçal.
-
-## 🧭 Como eu organizei a casa
-
-Eu tentei deixar a estrutura o mais limpa possível, separando bem o que cada parte faz para o código não virar uma bagunça:
-
-* **O Motor Principal (`src/`):** É aqui que a mágica acontece. Tem a parte que limpa e prepara os textos (`data.py` e `data_processing.py`), a inteligência em si (`model.py` e `evaluation.py`), e os critérios de nota que o modelo precisa respeitar (`rubrics.py`).
-* **A Porta de Entrada (`app.py` e `src/api.py`):** É por onde o sistema recebe as redações. Configurei como uma API para ficar fácil de integrar depois.
-* **Área de Testes e Brincadeiras (`notebooks/`):** Se você quiser só ver a coisa funcionando na prática sem configurar muita coisa, abra o `demo.ipynb`. É o melhor lugar para entender os bastidores.
-* **Garantia de Qualidade (`tests/`):** Deixei alguns testes prontos para garantir que, se eu (ou você) mexer no código amanhã, a gente não quebre a lógica de correção.
-
-## 🛠️ Quer rodar na sua máquina?
-
-É bem tranquilo. Não tem muito segredo:
-
-1. Clona o repositório pra sua máquina.
-2. Cria o seu ambiente virtual favorito (`venv`, por exemplo) pra não bagunçar o seu Python.
-3. Instala as bibliotecas que o projeto precisa:
-```bash
-   pip install -r requirements.txt
+├── data/
 │   └── redacoes.csv
 ├── notebooks/
 │   └── demo.ipynb
@@ -102,13 +76,13 @@ python -m pip install -r requirements-optional.txt
 Treinar e salvar o modelo:
 
 ```powershell
-python src\api.py train --data data\redacoes_padrao.csv --model-path models\essay_grader.joblib
+python src\api.py train --data data\redacoes_ita.csv --model-path models\essay_grader.joblib
 ```
 
 Avaliar um modelo salvo:
 
 ```powershell
-python src\api.py evaluate --data data\redacoes_padrao.csv --model-path models\essay_grader.joblib
+python src\api.py evaluate --data data\redacoes.csv --model-path models\essay_grader.joblib
 ```
 
 Prever a nota de uma redação:
@@ -135,9 +109,9 @@ O CSV esperado deve conter, no mínimo:
 
 - `essay`: texto da redação;
 - `score`: nota numérica total; ou
-- `tema`, `tipo_texto`, `coerencia`, `coesao`, `modalidade`: cinco critérios, cada um de 0 a 2.
+- `tema`, `tipo_texto`, `coerencia`, `coesao`, `modalidade`: cinco critérios ITA, cada um de 0 a 2.
 
-Nos perfis de correção, a nota total vai de 0 a 10. O Alto Padrão é mais rígido, o Médio Padrão é equilibrado e o Baixo Padrão é mais tolerante/formativo.
+No modo ITA, a nota total vai de 0 a 10. A redação esperada é dissertativo-argumentativa, com título e extensão estimada entre 25 e 35 linhas.
 
 ## Testes
 

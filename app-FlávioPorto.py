@@ -34,73 +34,76 @@ def get_service(model_path: str) -> EssayGraderService:
     return service
 
 
-def clear_inputs() -> None:
+def clear_inputs():
     st.session_state.file_uploader_key += 1
-    st.session_state.essay_input = ""
-
+    st.session_state.text_area_val = ""
 
 def main() -> None:
     if "file_uploader_key" not in st.session_state:
         st.session_state.file_uploader_key = 0
-    if "essay_input" not in st.session_state:
-        st.session_state.essay_input = ""
+    if "text_area_val" not in st.session_state:
+        st.session_state.text_area_val = ""
 
     st.title("IntelliWrite AI")
-    st.caption("Correcao experimental de redacoes com perfis de Baixo, Medio e Alto Padrao")
+    st.caption("Correção experimental de redações com perfis de exigência")
 
     model_path = st.sidebar.text_input("Modelo", value=str(DEFAULT_MODEL_PATH))
     profiles = available_profiles()
     profile_options = list(profiles.keys())
     profile_labels = {key: value["label"] for key, value in profiles.items()}
     selected_profile = st.sidebar.selectbox(
-        "Modelo de correcao",
+        "Tipo de correção",
         options=profile_options,
-        index=profile_options.index("medio"),
+        index=1,
         format_func=lambda key: profile_labels[key],
     )
-
     service = get_service(model_path)
 
     st.sidebar.divider()
     if service.model_exists():
         st.sidebar.success("Modelo encontrado")
     else:
-        st.sidebar.error("Modelo nao encontrado")
+        st.sidebar.error("Modelo não encontrado")
         st.sidebar.code(
-            "python src/api.py train --data data/redacoes_padrao.csv",
-            language="powershell",
+            ".\\.venv\\Scripts\\python.exe src\\api.py train --data data\\redacoes_padrao.csv --model-path models\\essay_grader.joblib",
+            language="bat",
         )
 
     st.sidebar.info(profiles[selected_profile]["description"])
 
     sample = (
-        "A tecnologia modifica a forma como a sociedade aprende, trabalha e participa da vida publica. "
-        "Entretanto, seus beneficios dependem de uso critico, acesso democratico e responsabilidade coletiva..."
+        "Título: Tecnologia e responsabilidade social\n\n"
+        "O avanço tecnológico modifica a forma como a sociedade aprende, trabalha e participa da vida pública. "
+        "Entretanto, seus benefícios dependem de uso crítico, acesso democrático e responsabilidade coletiva..."
     )
 
     essay_text = st.text_area(
-        "Cole a redacao",
+        "Cole a redação",
+        value=st.session_state.text_area_val,
         placeholder=sample,
         height=280,
-        key="essay_input",
+        key="text_area_widget"
     )
 
     uploaded_file = st.file_uploader(
-        "Ou envie um arquivo .txt",
-        type=["txt"],
-        key=f"file_uploader_{st.session_state.file_uploader_key}",
+        "Ou envie um arquivo .txt", 
+        type=["txt"], 
+        key=f"file_uploader_{st.session_state.file_uploader_key}"
     )
+    
     if uploaded_file is not None:
         essay_text = uploaded_file.read().decode("utf-8", errors="replace")
         st.text_area("Texto do arquivo", value=essay_text, height=220, disabled=True)
+    else:
+        essay_text = st.session_state.text_area_widget
 
     col_evaluate, col_clear = st.columns([1, 4])
-    evaluate = col_evaluate.button("Avaliar redacao", type="primary", use_container_width=True)
+    evaluate = col_evaluate.button("Avaliar redação", type="primary", use_container_width=True)
     col_clear.button("Limpar", use_container_width=False, on_click=clear_inputs)
 
     if evaluate:
         if not service.model_exists():
-            st.error("Treine o modelo antes de avaliar redacoes.")
+            st.error("Treine o modelo antes de avaliar redações.")
             return
 
         try:
@@ -118,7 +121,7 @@ def main() -> None:
 
         st.progress(min(max(score / 10, 0), 1))
 
-        st.write("Pontos de atencao:")
+        st.write("Pontos de atenção:")
         for point in feedback_points(score, selected_profile):
             st.write(f"- {point}")
 
@@ -126,18 +129,14 @@ def main() -> None:
         for point in correction_checklist(essay_text, selected_profile):
             st.write(f"- {point}")
 
-    with st.expander("Criterios usados como referencia"):
+    with st.expander("Critérios usados como referência"):
         st.dataframe(correction_criteria_rows(), hide_index=True, use_container_width=True)
-        st.caption(
-            "Todos os modelos consideram tema, estrutura, tese, capacidade argumentativa, "
-            "coerencia, coesao, repertorio, norma-padrao, conclusao e vocabulario. "
-            "Titulo nao e obrigatorio."
-        )
+        st.caption("A previsão automática estima a nota total. O perfil escolhido ajusta o nível de exigência.")
 
     with st.expander("Como treinar novamente"):
         st.code(
-            "python src/api.py train --data data/redacoes_padrao.csv",
-            language="powershell",
+            ".\\.venv\\Scripts\\python.exe src\\api.py train --data data\\redacoes_padrao.csv --model-path models\\essay_grader.joblib",
+            language="bat",
         )
 
 
